@@ -1,10 +1,8 @@
 #!/bin/sh
 # Install Isabelle 2021
 ISATARGZ=Isabelle2021_linux.tar.gz
-ISAINSTDIR=Isabelle2021
 ISABIN=isabelle2021
 ISAJDK=/usr/local/Isabelle2021/contrib/jdk-15.0.2+7/x86_64-linux
-ISAHEAPSDIR=Isabelle2021/heaps/polyml-5.8.2_x86_64_32-linux
 
 wget https://isabelle.in.tum.de/dist/${ISATARGZ} \
   && tar -xzf ${ISATARGZ} \

@@ -142,11 +142,13 @@ RUN apt install -y mcpp
 ARG ISADESKTOP=resources/Isabelle2021/Isabelle.desktop
 ARG ISAPREFS=dot_isabelle_2021.tar
 ARG ISAINSTALL=install_Isabelle2021.sh
+ARG ISAINSTDIR=Isabelle2021
+ARG ISAHEAPSDIR=Isabelle2021/heaps/polyml-5.8.2_x86_64_32-linux
 COPY resources/${ISAINSTALL} /root
 COPY resources/${ISAPREFS} ${HOME}
 COPY ${ISADESKTOP} /usr/share/applications/
 RUN chmod +x /root/${ISAINSTALL}
-RUN if [ "$arch" = "amd64" ]; then env ISAPREFS=${ISAPREFS} /root/${ISAINSTALL}; fi
+RUN if [ "$arch" = "amd64" ]; then env ISAPREFS=${ISAPREFS} ISAINSTDIR=${ISAINSTDIR} ISAHEAPSDIR=${ISAHEAPSDIR} /root/${ISAINSTALL}; fi
 RUN rm -f /root/${ISAINSTALL} ${HOME}/${ISAPREFS}
 RUN if [ "$arch" != "amd64" ]; then rm -f /usr/share/applications/${ISADESKTOP} ; fi
 
