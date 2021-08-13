@@ -9,10 +9,12 @@ RESOL   = 1440x900
 ARCHS   = amd64 arm64
 IMAGES := $(ARCHS:%=$(REPO)$(NAME):$(TAG)-%)
 PLATFORMS := $$(first="True"; for a in $(ARCHS); do if [[ $$first == "True" ]]; then printf "linux/%s" $$a; first="False"; else printf ",linux/%s" $$a; fi; done)
+
 # Temporarily do  not tag the image with its architecture.
 # We know how to build only on x86_64
-#ARCHIMAGE := $(REPO)$(NAME):$(TAG)-$(ARCH)
-ARCHIMAGE := $(REPO)$(NAME):$(TAG)
+# ARCHIMAGE := $(REPO)$(NAME):$(TAG)
+
+ARCHIMAGE := $(REPO)$(NAME):$(TAG)-$(ARCH)
 
 help:
 	@echo "# Available targets:"
