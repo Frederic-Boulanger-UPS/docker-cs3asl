@@ -21,6 +21,6 @@ cd alt-ergo-2.4.0/
 ./configure
 make
 arch=`uname -m`
-arch=`if [ $arch = "x86_64" ]; then echo amd64; else echo $arch; fi`
+arch=`if [ $arch = "x86_64" ]; then echo amd64; elif [ $arch = "aarch64" ]; then echo arm64; else echo $arch; fi`
 cp _build/install/default/bin/alt-ergo /workspace/resources/altergo-240/alt-ergo_$arch
 cp _build/install/default/bin/altgr-ergo /workspace/resources/altergo-240/altgr-ergo_$arch
