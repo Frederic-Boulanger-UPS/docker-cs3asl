@@ -1,7 +1,7 @@
 .PHONY: build manifest run debug push save clean clobber
 
 REPO    = fredblgr/
-NAME    = docker-3asl
+NAME    = docker-cs3asl
 #ARCH    = `uname -m`
 TAG     = 2021
 ARCH   := $$(arch=$$(uname -m); if [ $$arch = "x86_64" ]; then echo amd64; elif [ $$arch = "aarch64" ]; then echo arm64; else echo $$arch; fi)
