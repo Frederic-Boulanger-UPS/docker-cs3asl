@@ -139,39 +139,47 @@ RUN apt install -y mcpp
 # # Reuse the JDK provided with Isabelle for the whole system
 # RUN ln -s ${ISAJDK}/bin/java /usr/local/bin/ ; \
 #     ln -s ${ISAJDK}/bin/javac /usr/local/bin/
-ARG ISADESKTOP=resources/Isabelle2021/Isabelle.desktop
+ARG ISADESKTOP=resources/Isabelle2021/Isabelle_$arch.desktop
 ARG ISAPREFS=dot_isabelle_2021.tar
-ARG ISAINSTALL=install_Isabelle2021.sh
-ARG ISAINSTDIR=Isabelle2021
-ARG ISAHEAPSDIR=Isabelle2021/heaps/polyml-5.8.2_x86_64_32-linux
+ARG ISATARGZ=Isabelle2021-1-RC1_linux_$arch.tar.gz
+ARG ISAINSTALL=install_Isabelle2021_$arch.sh
+# ARG ISAINSTDIR=Isabelle2021
+# ARG ISAHEAPSDIR=Isabelle2021/heaps/polyml-5.8.2_x86_64_32-linux
 COPY resources/${ISAINSTALL} /root
+COPY resources/downloads/${ISATARGZ} /root
 COPY resources/${ISAPREFS} ${HOME}
-COPY ${ISADESKTOP} /usr/share/applications/
+COPY ${ISADESKTOP} /usr/share/applications/Isabelle.desktop
 RUN chmod +x /root/${ISAINSTALL}
-RUN if [ "$arch" = "amd64" ]; then env ISAPREFS=${ISAPREFS} ISAINSTDIR=${ISAINSTDIR} ISAHEAPSDIR=${ISAHEAPSDIR} /root/${ISAINSTALL}; fi
+# RUN if [ "$arch" = "amd64" ]; then env ISAPREFS=${ISAPREFS} ISAINSTDIR=${ISAINSTDIR} ISAHEAPSDIR=${ISAHEAPSDIR} /root/${ISAINSTALL}; fi
+RUN env ISATARGZ=${ISATARGZ} ISAPREFS=${ISAPREFS} /root/${ISAINSTALL}
+
 RUN rm -f /root/${ISAINSTALL} ${HOME}/${ISAPREFS}
-RUN if [ "$arch" != "amd64" ]; then rm -f /usr/share/applications/${ISADESKTOP} ; fi
+# RUN if [ "$arch" != "amd64" ]; then rm -f /usr/share/applications/${ISADESKTOP} ; fi
 
 
 # Install Why3 when working with Isabelle 2021
-RUN wget https://gforge.inria.fr/frs/download.php/file/38425/why3-1.4.0.tar.gz
+RUN wget https://why3.gitlabpages.inria.fr/releases/why3-1.4.0.tar.gz
 RUN tar zxf why3-1.4.0.tar.gz && rm why3-1.4.0.tar.gz
 COPY resources/why3-fix.tar .
-RUN cd why3-1.4.0 && tar xvf ../why3-fix.tar ; rm ../why3-fix.tar
+RUN cd why3-1.4.0 && tar --strip-components=1 -xvf ../why3-fix.tar ; rm ../why3-fix.tar
 RUN cd why3-1.4.0 && autoconf && ./configure && make
-RUN if [ "$arch" = "amd64" ]; then echo "/usr/local/lib/why3/isabelle" >> /usr/local/${ISAINSTDIR}/etc/components ; fi
+RUN ISAINSTDIR=`ls -d /usr/local/Isabelle*`; echo "/usr/local/lib/why3/isabelle" >> ${ISAINSTDIR}/etc/components
+
 RUN cd why3-1.4.0; make install; make byte; make install-lib ; cd ..; rm -r why3-1.4.0
-RUN if [ "$arch" = "amd64" ]; then \
-			mv ${HOME}/.isabelle/${ISAHEAPSDIR}/Why3 /usr/local/${ISAHEAPSDIR}/ ;\
-      mv ${HOME}/.isabelle/${ISAHEAPSDIR}/log/* /usr/local/${ISAHEAPSDIR}/log/ ;\
-    fi
+# RUN if [ "$arch" = "amd64" ]; then \
+# 			mv ${HOME}/.isabelle/${ISAHEAPSDIR}/Why3 /usr/local/${ISAHEAPSDIR}/ ;\
+#       mv ${HOME}/.isabelle/${ISAHEAPSDIR}/log/* /usr/local/${ISAHEAPSDIR}/log/ ;\
+#     fi
+RUN heapsdir=`ls -d /usr/local/Isabelle*/heaps/polyml-* |sed -e 's=/usr/local/=='`; \
+		mv ${HOME}/.isabelle/${heapsdir}/Why3 /usr/local/${heapsdir}/ ;\
+    mv ${HOME}/.isabelle/${heapsdir}/log/* /usr/local/${heapsdir}/log/
 
 # Configure Why3 with SMT provers and save the configuration file
 RUN why3 config detect && mv ${HOME}/.why3.conf /root/
 RUN echo 'cp /root/.why3.conf ${HOME}' >> /root/.novnc_setup
 
 # Eclipse needs Java, which is not installed with Isabelle on ARM64
-RUN if [ "$arch" = "arm64" ]; then apt-get install -y openjdk-16-jdk ; fi
+# RUN if [ "$arch" = "arm64" ]; then apt-get install -y openjdk-16-jdk ; fi
 
 # Configuration of the file manager and the application launcher
 COPY resources/dot_config/lxpanel/LXDE/panels/panel_isa2021_Eclipse /root/.config/lxpanel/LXDE/panels/panel
@@ -220,6 +228,8 @@ RUN wget https://git.frama-c.com/pub/meta/-/archive/0.1.2/meta-0.1.2.tar.gz \
   	&& cd meta-0.1.2 \
   	&& autoconf && ./configure && make && make install ; \
   	cd ..; rm -rf meta-0.1.2
+
+RUN apt-get update; apt-get upgrade -y
 
 RUN apt-get install at-spi2-core
 
