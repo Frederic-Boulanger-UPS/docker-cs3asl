@@ -261,8 +261,8 @@ why3_vc cardinal_filter
   using cardinal_subset subset_filter by blast
 
 why3_vc disjoint_diff_eq
-  using Fset.disjoint_def Fset.facts.diff_def fsubsetI fsubset_antisym
-  by (smt (verit))
+  using Fset.disjoint_def Fset.facts.diff_def fset_eqI
+  by metis
 (*  by (smt Fset.disjoint_def Fset.facts.diff_def fsubsetI fsubset_antisym) *)
 
 why3_vc  disjoint_diff_s2

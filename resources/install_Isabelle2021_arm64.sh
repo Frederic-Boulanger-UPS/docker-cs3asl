@@ -12,9 +12,7 @@ tar zxf ${ISATARGZ}
 # Get rid of the distribution archive
 rm ${ISATARGZ}
 
-ISAINSTDIR=`ls -d Isabelle*`
-
-echo "ISAINSTDIR=\"${ISAINSTDIR}\""
+ISAINSTDIR=`ls -ld Isabelle*|grep '^d'|sed -e 's/.*\(Isabelle.*\)/\1/'`
 
 mv ${ISAINSTDIR} /usr/local \
 	&& ln -s /usr/local/${ISAINSTDIR}/bin/isabelle /usr/local/bin/${ISABIN} \

@@ -153,7 +153,7 @@ RUN chmod +x /root/${ISAINSTALL}
 # RUN if [ "$arch" = "amd64" ]; then env ISAPREFS=${ISAPREFS} ISAINSTDIR=${ISAINSTDIR} ISAHEAPSDIR=${ISAHEAPSDIR} /root/${ISAINSTALL}; fi
 RUN env ISATARGZ=${ISATARGZ} ISAPREFS=${ISAPREFS} /root/${ISAINSTALL}
 
-RUN rm -f /root/${ISAINSTALL} ${HOME}/${ISAPREFS}
+RUN rm -f /root/${ISATARGZ} /root/${ISAINSTALL} ${HOME}/${ISAPREFS}
 # RUN if [ "$arch" != "amd64" ]; then rm -f /usr/share/applications/${ISADESKTOP} ; fi
 
 
@@ -166,10 +166,7 @@ RUN cd why3-1.4.0 && autoconf && ./configure && make
 RUN ISAINSTDIR=`ls -d /usr/local/Isabelle*`; echo "/usr/local/lib/why3/isabelle" >> ${ISAINSTDIR}/etc/components
 
 RUN cd why3-1.4.0; make install; make byte; make install-lib ; cd ..; rm -r why3-1.4.0
-# RUN if [ "$arch" = "amd64" ]; then \
-# 			mv ${HOME}/.isabelle/${ISAHEAPSDIR}/Why3 /usr/local/${ISAHEAPSDIR}/ ;\
-#       mv ${HOME}/.isabelle/${ISAHEAPSDIR}/log/* /usr/local/${ISAHEAPSDIR}/log/ ;\
-#     fi
+
 RUN heapsdir=`ls -d /usr/local/Isabelle*/heaps/polyml-* |sed -e 's=/usr/local/=='`; \
 		mv ${HOME}/.isabelle/${heapsdir}/Why3 /usr/local/${heapsdir}/ ;\
     mv ${HOME}/.isabelle/${heapsdir}/log/* /usr/local/${heapsdir}/log/
