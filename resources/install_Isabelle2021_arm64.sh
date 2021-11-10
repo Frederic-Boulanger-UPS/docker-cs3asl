@@ -30,6 +30,9 @@ ln -s /usr/local/${ISAINSTDIR}/contrib/vampire-*/*/vampire /usr/local/bin/vampir
 # ln -s /usr/local/${ISAINSTDIR}/contrib/z3-4.4.0pre-3/x86_64-linux/z3 /usr/local/bin/z3
 
 mkdir .isabelle ; cd .isabelle; tar xvf ${HOME}/${ISAPREFS}; rm ${HOME}/${ISAPREFS}
+# Rename the settings folder to match the installed version
+ISAPREFSDIR=`ls -ld .isabelle/Isabelle*|grep '^d'|sed -e 's/.*\(Isabelle.*\)/\1/'`
+mv .isabelle/${ISAPREFSDIR} .isabelle/${ISAINSTDIR}
 echo 'cp -r /root/.isabelle ${HOME}' >> /root/.novnc_setup
 
 # Reuse the JDK provided with Isabelle for the whole system
