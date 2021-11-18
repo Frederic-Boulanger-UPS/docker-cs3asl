@@ -74,6 +74,17 @@ run:
 	sleep 5
 	open http://localhost:6080 || xdg-open http://localhost:6080 || echo "http://localhost:6080"
 
+runasubuntu:
+	docker run --rm --detach \
+		--env="USERNAME=ubuntu" \
+		--volume ${PWD}:/workspace:rw \
+		--publish 6080:80 \
+		--name $(NAME) \
+		--env "RESOLUTION=$(RESOL)" \
+		$(ARCHIMAGE)
+	sleep 5
+	open http://localhost:6080 || xdg-open http://localhost:6080 || echo "http://localhost:6080"
+
 runasroot:
 	docker run --rm --detach \
 		--volume ${PWD}:/workspace:rw \
