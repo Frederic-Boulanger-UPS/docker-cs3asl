@@ -10,7 +10,7 @@ Source files available on [GitHub](https://github.com/Frederic-Boulanger-UPS/doc
 Based on the work by [Doro Wu](https://github.com/fcwu), see on [Docker](https://hub.docker.com/r/dorowu/ubuntu-desktop-lxde-vnc/)
 
 This image contains Ubuntu 20.04 with an x11vnc server and a VNC client running in your browser with the following tools installed:
-* Isabelle 2021
+* Isabelle 2021-1
 * The Coq IDE
 * Why3 1.4.0
 * Frama-C 23.0
