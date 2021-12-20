@@ -86,11 +86,11 @@ COPY --from=builder /souffle-202.tgz /usr/local/souffle-202.tgz
 RUN cd /usr/local ; tar zxf souffle-202.tgz; rm souffle-202.tgz; cd /
 RUN apt install -y mcpp
 
-# Install Isabelle 2021
+# Install Isabelle 2021-1
 ARG ISADESKTOP=resources/Isabelle2021/Isabelle_$arch.desktop
 ARG ISAPREFS=dot_isabelle_2021.tar
-ARG ISATARGZ=Isabelle2021-1-RC3_linux_$arch.tar.gz
-ARG ISAINSTALL=install_Isabelle2021_$arch.sh
+ARG ISATARGZ=Isabelle2021-1_linux_$arch.tar.gz
+ARG ISAINSTALL=install_Isabelle2021-1_$arch.sh
 COPY resources/${ISAINSTALL} /root
 COPY resources/downloads/${ISATARGZ} /root
 COPY resources/${ISAPREFS} ${HOME}
