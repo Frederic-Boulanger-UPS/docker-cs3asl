@@ -120,7 +120,7 @@ RUN why3 config detect && mv ${HOME}/.why3.conf /root/
 RUN echo 'cp /root/.why3.conf ${HOME}' >> /root/.novnc_setup
 
 # Configuration of the file manager and the application launcher
-COPY resources/dot_config/lxpanel/LXDE/panels/panel_isa2021_Eclipse /root/.config/lxpanel/LXDE/panels/panel
+COPY resources/dot_config/lxpanel/LXDE/panels/panel_isa_eclipse_firefox /root/.config/lxpanel/LXDE/panels/panel
 
 # Install Eclipse Modeling 2021-09
 # https://www.eclipse.org/downloads/packages/release/2021-09/r/eclipse-modeling-tools

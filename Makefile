@@ -24,7 +24,7 @@ resources/dot_isabelle_2021.tar: resources/dot_isabelle_2021/*
 # Build image
 build: resources/why3-fix.tar resources/dot_isabelle_2021.tar
 	@echo "Building $(ARCHIMAGE) for $(ARCH)"
-	docker build --build-arg arch=$(ARCH) --tag $(ARCHIMAGE) .
+	docker build --pull --build-arg arch=$(ARCH) --tag $(ARCHIMAGE) .
 	@danglingimages=$$(docker images --filter "dangling=true" -q); \
 	if [[ $$danglingimages != "" ]]; then \
 	  docker rmi $$(docker images --filter "dangling=true" -q); \
