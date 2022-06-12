@@ -1,8 +1,8 @@
-.PHONY: build manifest run debug push save clean clobber
+.PHONY: build manifest run debug push save clean clobber buildaltergo buildprovers
 
 REPO    = fredblgr/
 NAME    = docker-cs3asl
-TAG     = 2021
+TAG     = 2022
 ARCH   := $$(arch=$$(uname -m); if [ $$arch = "x86_64" ]; then echo amd64; elif [ $$arch = "aarch64" ]; then echo arm64; else echo $$arch; fi)
 RESOL   = 1440x900
 ARCHS   = amd64 arm64
@@ -18,11 +18,8 @@ help:
 	@echo "#   - run: run docker container"
 	@echo "#   - push: push docker image to docker hub"
 
-resources/dot_isabelle_2021.tar: resources/dot_isabelle_2021/*
-	tar cvCf resources/dot_isabelle_2021 resources/dot_isabelle_2021.tar --exclude .DS_Store .
-
 # Build image
-build: resources/why3-fix.tar resources/dot_isabelle_2021.tar
+build:
 	@echo "Building $(ARCHIMAGE) for $(ARCH)"
 	docker build --pull --build-arg arch=$(ARCH) --tag $(ARCHIMAGE) .
 	@danglingimages=$$(docker images --filter "dangling=true" -q); \
@@ -117,8 +114,8 @@ debug:
 		$(ARCHIMAGE)
 
 buildaltergo:
-	docker run --privileged --rm --interactive --tty \
-    --volume ${PWD}:/workspace:rw \
-    --env user="`id -n -u`" --env userid="`id -u`" \
-    ubuntu:20.04 \
-    bash /workspace/resources/altergo-240/build-alt-ergo.sh
+	cd docker_build_alt-ergo ; ./docker_build_alt-ergo.sh
+
+buildprovers:
+	cd docker_build_provers ; ./docker_build_provers.sh
+

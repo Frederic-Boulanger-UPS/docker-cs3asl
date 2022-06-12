@@ -1,0 +1,44 @@
+# Install Isabelle 2021-1
+# + make link from contrib to /usr/local/bin
+
+# CVC5 dependencies
+apt-get install -y g++
+
+apt-get install -y python3-pip
+pip install toml
+
+wget https://github.com/arminbiere/cadical/archive/refs/heads/master.zip
+unzip master.zip
+cd cadical-master/
+./configure
+make
+mv build/cadical /usr/local/bin/
+mv build/libcadical.a /usr/local/lib/
+mv src/cadical.hpp /usr/local/include/
+
+wget https://github.com/cvc5/cvc5/archive/refs/tags/cvc5-1.0.0.tar.gz
+tar zxf cvc5-1.0.0.tar.gz
+cd cvc5-cvc5-1.0.0/
+./configure.sh --auto-download
+cd build
+make
+make install
+
+
+# Install why3 stuff
+apt-get install -y ocaml menhir libnum-ocaml-dev libmenhir-ocaml-dev libzarith-ocaml-dev libzip-ocaml-dev liblablgtk3-ocaml-dev liblablgtksourceview3-ocaml-dev libocamlgraph-ocaml-dev libre-ocaml-dev libjs-of-ocaml-dev alt-ergo
+
+# Install why3
+wget https://why3.gitlabpages.inria.fr/releases/why3-1.5.0.tar.gz
+tar zxf why3-1.5.0.tar.gz
+cd why3-1.5.0
+./configure
+make
+ISAINSTDIR=`ls -d /usr/local/Isabelle*`; echo "/usr/local/lib/why3/isabelle" >> ${ISAINSTDIR}/etc/components
+make install
+make byte
+make install-lib
+heapsdir=`ls -d /usr/local/Isabelle*/heaps/polyml-* |sed -e 's=/usr/local/=='`
+mv ${HOME}/.isabelle/${heapsdir}/Why3 /usr/local/${heapsdir}/
+mv ${HOME}/.isabelle/${heapsdir}/log/* /usr/local/${heapsdir}/log/
+why3 config detect && mv ${HOME}/.why3.conf /root/

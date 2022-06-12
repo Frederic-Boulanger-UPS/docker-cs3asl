@@ -26,20 +26,6 @@ RUN wget https://github.com/Z3Prover/z3/archive/z3-4.8.6.tar.gz \
 	&& cd z3-z3-4.8.6; env PYTHON=python3 ./configure; cd build; make; make install; \
 	cd ../..; rm -r z3-*
 
-# Build CVC4, only on amd64/x86_64 (fails on arm64)
-# Or reuse the one from the Isabelle distro
-# CVC4 requires Java (for ANTLR)
-# RUN if [ "$arch" = "amd64" ]; then pip3 install toml; fi
-# RUN if [ "$arch" = "amd64" ]; then \
-# 			wget https://github.com/CVC4/CVC4/archive/1.8.tar.gz \
-# 	    && tar zxf 1.8.tar.gz ; \
-# 	  fi
-# RUN if [ "$arch" = "amd64" ]; then \
-# 	    cd CVC4-1.8; ./contrib/get-antlr-3.4 && ./configure.sh \
-# 	    && cd build && make && make install; \
-# 	  fi
-# RUN if [ "$arch" = "amd64" ]; then rm -r CVC4* && rm 1.8.tar.gz; fi
-
 # Build E prover
 # Old 2.0 version at http://wwwlehre.dhbw-stuttgart.de/~sschulz/WORK/E_DOWNLOAD/V_2.0/E.tgz
 RUN wget http://wwwlehre.dhbw-stuttgart.de/~sschulz/WORK/E_DOWNLOAD/V_2.6/E.tgz \
@@ -100,61 +86,19 @@ COPY --from=builder /souffle-202.tgz /usr/local/souffle-202.tgz
 RUN cd /usr/local ; tar zxf souffle-202.tgz; rm souffle-202.tgz; cd /
 RUN apt install -y mcpp
 
-# COPY resources/cvc4/cvc4_17_$arch /usr/local/bin/cvc4
-# COPY resources/cvc4/libcvc4parser.so.6_$arch /usr/local/lib/libcvc4parser.so.6
-# COPY resources/cvc4/libcvc4.so.6_$arch /usr/local/lib/libcvc4.so.6
-# RUN chmod a+x /usr/local/bin/cvc4
-
-# # Install Isabelle 2021
-# ARG ISATARGZ=Isabelle2021_linux.tar.gz
-# ARG ISAINSTDIR=Isabelle2021
-# ARG ISABIN=isabelle2021
-# ARG ISADESKTOP=resources/Isabelle2021/Isabelle.desktop
-# # ARG ISAPREFS=resources/dot_isabelle_2021
-# ARG ISAJDK=/usr/local/Isabelle2021/contrib/jdk-15.0.2+7/x86_64-linux
-# ARG ISAHEAPSDIR=Isabelle2021/heaps/polyml-5.8.2_x86_64_32-linux
-# 
-# RUN wget https://isabelle.in.tum.de/dist/${ISATARGZ} \
-#   && tar -xzf ${ISATARGZ} \
-#   && mv ${ISAINSTDIR} /usr/local/ \
-#   && ln -s /usr/local/${ISAINSTDIR}/bin/isabelle /usr/local/bin/${ISABIN} \
-#   && ln -s /usr/local/bin/${ISABIN} /usr/local/bin/isabelle
-# 
-# # Reuse the SMT solvers embedded into the Isabelle distribution
-# RUN ln -s /usr/local/${ISAINSTDIR}/contrib/spass-3.8ds-2/x86_64-linux/SPASS /usr/local/bin/SPASS
-# RUN ln -s /usr/local/${ISAINSTDIR}/contrib/vampire-4.2.2/x86_64-linux/vampire /usr/local/bin/vampire
-# # These ones will be built using the version supported by why3
-# RUN ln -s /usr/local/${ISAINSTDIR}/contrib/cvc4-1.8/x86_64-linux/cvc4 /usr/local/bin/cvc4
-# # RUN ln -s /usr/local/${ISAINSTDIR}/contrib/e-2.5-1/x86_64-linux/eprover /usr/local/bin/eprover
-# # RUN ln -s /usr/local/${ISAINSTDIR}/contrib/z3-4.4.0pre-3/x86_64-linux/z3 /usr/local/bin/z3
-# 
-# # Get rid of the distribution archive
-# RUN rm ${ISATARGZ}
-# 
-# COPY ${ISADESKTOP} /usr/share/applications/
-# COPY resources/dot_isabelle_2021.tar ${HOME}/
-# RUN mkdir .isabelle ; cd .isabelle; tar xvf ${HOME}/dot_isabelle_2021.tar; rm ${HOME}/dot_isabelle_2021.tar
-# RUN echo 'cp -r /root/.isabelle ${HOME}' >> /root/.novnc_setup
-# 
-# # Reuse the JDK provided with Isabelle for the whole system
-# RUN ln -s ${ISAJDK}/bin/java /usr/local/bin/ ; \
-#     ln -s ${ISAJDK}/bin/javac /usr/local/bin/
+# Install Isabelle 2021-1
 ARG ISADESKTOP=resources/Isabelle2021/Isabelle_$arch.desktop
 ARG ISAPREFS=dot_isabelle_2021.tar
-ARG ISATARGZ=Isabelle2021-1-RC3_linux_$arch.tar.gz
-ARG ISAINSTALL=install_Isabelle2021_$arch.sh
-# ARG ISAINSTDIR=Isabelle2021
-# ARG ISAHEAPSDIR=Isabelle2021/heaps/polyml-5.8.2_x86_64_32-linux
+ARG ISATARGZ=Isabelle2021-1_linux_$arch.tar.gz
+ARG ISAINSTALL=install_Isabelle2021-1_$arch.sh
 COPY resources/${ISAINSTALL} /root
 COPY resources/downloads/${ISATARGZ} /root
 COPY resources/${ISAPREFS} ${HOME}
 COPY ${ISADESKTOP} /usr/share/applications/Isabelle.desktop
 RUN chmod +x /root/${ISAINSTALL}
-# RUN if [ "$arch" = "amd64" ]; then env ISAPREFS=${ISAPREFS} ISAINSTDIR=${ISAINSTDIR} ISAHEAPSDIR=${ISAHEAPSDIR} /root/${ISAINSTALL}; fi
 RUN env ISATARGZ=${ISATARGZ} ISAPREFS=${ISAPREFS} /root/${ISAINSTALL}
 
 RUN rm -f /root/${ISATARGZ} /root/${ISAINSTALL} ${HOME}/${ISAPREFS}
-# RUN if [ "$arch" != "amd64" ]; then rm -f /usr/share/applications/${ISADESKTOP} ; fi
 
 
 # Install Why3 when working with Isabelle 2021
@@ -175,16 +119,13 @@ RUN heapsdir=`ls -d /usr/local/Isabelle*/heaps/polyml-* |sed -e 's=/usr/local/==
 RUN why3 config detect && mv ${HOME}/.why3.conf /root/
 RUN echo 'cp /root/.why3.conf ${HOME}' >> /root/.novnc_setup
 
-# Eclipse needs Java, which is not installed with Isabelle on ARM64
-# RUN if [ "$arch" = "arm64" ]; then apt-get install -y openjdk-16-jdk ; fi
-
 # Configuration of the file manager and the application launcher
-COPY resources/dot_config/lxpanel/LXDE/panels/panel_isa2021_Eclipse /root/.config/lxpanel/LXDE/panels/panel
+COPY resources/dot_config/lxpanel/LXDE/panels/panel_isa_eclipse_firefox /root/.config/lxpanel/LXDE/panels/panel
 
-# Install Eclipse Modeling 2021-06
-# https://www.eclipse.org/downloads/packages/release/2021-06/r/eclipse-modeling-tools
+# Install Eclipse Modeling 2021-09
+# https://www.eclipse.org/downloads/packages/release/2021-09/r/eclipse-modeling-tools
 # Copy existing configuration containing:
-# * Eclipse Modeling 2022-06
+# * Eclipse Modeling 2021-09
 # * Acceleo 3.7 from the OBEO Market Place
 # * From Install New Software (with all available sites)
 #   * All Acceleo
@@ -201,13 +142,14 @@ COPY resources/dot_config/lxpanel/LXDE/panels/panel_isa2021_Eclipse /root/.confi
 #   * Programming languages > Wild Web developer
 #   * Programming languages > Xtend IDE
 #   * Web, XML, Java EE and OSGi Enterprise Development > everything that starts with m2e
-ENV ECLIPSETGZ=eclipse-modeling-2021-06_$arch.tgz
-ENV DOTECLIPSETGZ=dot_eclipse-$arch.tgz
-ENV ECLIPSEINSTDIR=/usr/local/eclipse-modeling-2021-06
+
+ENV ECLIPSETGZ=eclipse-modeling-2021-09_$arch.tgz
+ENV DOTECLIPSETGZ=dot_eclipse-2021-09_$arch.tgz
+ENV ECLIPSEINSTDIR=/usr/local/eclipse-modeling-2021-09
 COPY resources/${ECLIPSETGZ} /usr/local/
 RUN cd /usr/local; tar zxf ${ECLIPSETGZ} && rm ${ECLIPSETGZ}; \
     ln -s ${ECLIPSEINSTDIR}/eclipse /usr/local/bin/eclipse
-COPY resources/Eclipse.desktop /usr/share/applications/
+COPY resources/Eclipse-2021-09.desktop /usr/share/applications/Eclipse.desktop
 COPY resources/${DOTECLIPSETGZ} /root/
 RUN cd /root ; tar zxf ${DOTECLIPSETGZ} ; rm ${DOTECLIPSETGZ}
 RUN echo 'cp -r /root/.eclipse ${HOME}' >> /root/.novnc_setup
