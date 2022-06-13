@@ -1,9 +1,9 @@
 #!/bin/sh
-# Ubuntu 20.04LTS headless noVNC
+# Ubuntu 22.04LTS headless noVNC
 # Connect to http://localhost:6080/
 REPO=fredblgr/
 IMAGE=docker-cs3asl
-TAG=2021
+TAG=2022
 URL=http://localhost:6080
 
 if [ -z "$SUDO_UID" ]

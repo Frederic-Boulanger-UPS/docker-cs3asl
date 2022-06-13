@@ -9,22 +9,21 @@ Source files available on [GitHub](https://github.com/Frederic-Boulanger-UPS/doc
 
 Based on the work by [Doro Wu](https://github.com/fcwu), see on [Docker](https://hub.docker.com/r/dorowu/ubuntu-desktop-lxde-vnc/)
 
-This image contains Ubuntu 20.04 with an x11vnc server and a VNC client running in your browser with the following tools installed:
+This image contains Ubuntu 22.04 with an x11vnc server and a VNC client running in your browser with the following tools installed:
 * Isabelle 2021-1
 * The Coq IDE
-* Why3 1.4.0
-* Frama-C 23.0
-* Metacsl 0.1.2
+* Why3 1.5.0
+* Frama-C 25.0
+* Metacsl 0.2
 * Various solvers, among which:
-  * Alt-Ergo 2.4.0
-  * Z3 4.8.6
+  * Alt-Ergo 2.4.1
+  * Z3 4.8.17
   * E 2.6
   * CVC4 1.8 (not for arm64)
-* Soufflé 2.0.2
-* Eclipse Modeling 2021-09 with:
-  * Acceleo 3.7
+* Soufflé
+* Eclipse Modeling 2022-03 with:
+  * Acceleo
   * QVT Operational
-  * Xpand
   * Xtext
   * C/C++ development tools
 
