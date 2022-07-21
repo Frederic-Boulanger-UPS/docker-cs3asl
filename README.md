@@ -36,7 +36,7 @@ docker run --rm --detach --publish 6080:80 \
            --env USERNAME=`id -n -u` \
            --env USERID=`id -u` \
            --env RESOLUTION=1400x900 \
-           --name docker-cs3asl fredblgr/docker-cs3asl:2021
+           --name docker-cs3asl fredblgr/docker-cs3asl:2022
 ```
 
 Very Quick Start
@@ -65,7 +65,7 @@ HTTP Base Authentication
 This image provides base access authentication of HTTP via `HTTP_PASSWORD`
 
 ```
-docker run -p 6080:80 -e HTTP_PASSWORD=mypassword fredblgr/docker-cs3asl:2021
+docker run -p 6080:80 -e HTTP_PASSWORD=mypassword fredblgr/docker-cs3asl:2022
 ```
 
 Screen Resolution
@@ -74,7 +74,7 @@ Screen Resolution
 The resolution of the virtual desktop can be set by the `RESOLUTION` environment variable, for example
 
 ```
-docker run --publish 6080:80 --env RESOLUTION=1920x1080 fredblgr/docker-cs3asl:2021
+docker run --publish 6080:80 --env RESOLUTION=1920x1080 fredblgr/docker-cs3asl:2022
 ```
 
 Default Desktop User
@@ -84,7 +84,7 @@ The default user is `root`, the default password is `ubuntu`.
 You may change the username, user id and password respectively by setting the `USERNAME`, `USERID` and `PASSWORD` environment variables, for example,
 
 ```
-docker run --publish 6080:80 --env USERNAME=name --env USERID=42 --env PASSWORD=password fredblgr/docker-cs3asl:2021
+docker run --publish 6080:80 --env USERNAME=name --env USERID=42 --env PASSWORD=password fredblgr/docker-cs3asl:2022
 ```
 
 The `start-cs3asl.sh`script takes care of setting the USERNAME and the USERID variables to your user name and id on the host.
