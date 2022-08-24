@@ -39,8 +39,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 RUN apt-get install -y coqide
 
 COPY docker_build_alt-ergo/alt-ergo_$arch /usr/local/bin/alt-ergo
-COPY docker_build_alt-ergo/altgr-ergo_$arch /usr/local/bin/altgr-ergo
-RUN chmod a+x /usr/local/bin/alt-ergo /usr/local/bin/altgr-ergo
+# COPY docker_build_alt-ergo/altgr-ergo_$arch /usr/local/bin/altgr-ergo
+RUN chmod a+x /usr/local/bin/alt-ergo
+# RUN chmod a+x /usr/local/bin/altgr-ergo
 
 COPY docker_build_provers/z3_$arch /usr/local/bin/z3
 RUN chmod a+x /usr/local/bin/z3
@@ -74,17 +75,17 @@ RUN why3 config detect && mv ${HOME}/.why3.conf /root/
 RUN apt-get install -y yaru-theme-icon autoconf graphviz \
                        libppx-import-ocaml-dev libppx-deriving-ocaml-dev \
                        libppx-deriving-yojson-ocaml-dev swi-prolog at-spi2-core
-RUN wget https://www.frama-c.com/download/frama-c-25.0-beta-Manganese.tar.gz
-RUN tar zxf frama-c-25.0-beta-Manganese.tar.gz && rm frama-c-25.0-beta-Manganese.tar.gz; \
-    cd frama-c-25.0-beta-Manganese; autoconf; ./configure; make; make install ; \
-    cd ..; rm -rf frama-c-25.0-beta-Manganese
+RUN wget https://frama-c.com/download/frama-c-25.0-Manganese.tar.gz
+RUN tar zxf frama-c-25.0-Manganese.tar.gz && rm frama-c-25.0-Manganese.tar.gz; \
+    cd frama-c-25.0-Manganese; autoconf; ./configure; make; make install ; \
+    cd ..; rm -rf frama-c-25.0-Manganese
 
 # Install Metacsl
-RUN wget https://git.frama-c.com/pub/meta/-/archive/stable/manganese/meta-stable-manganese.tar.gz \
-  	&& tar zxf meta-stable-manganese.tar.gz && rm meta-stable-manganese.tar.gz \
-  	&& cd meta-stable-manganese \
+RUN wget https://git.frama-c.com/pub/meta/-/archive/0.3/meta-0.3.tar.gz \
+  	&& tar zxf meta-0.3.tar.gz && rm meta-0.3.tar.gz \
+  	&& cd meta-0.3 \
   	&& autoconf && ./configure && make && make install ; \
-  	cd ..; rm -rf meta-stable-manganese*
+  	cd ..; rm -rf meta-0.3*
 
 # Install Eclipse Modeling 2022-03
 # https://www.eclipse.org/downloads/packages/release/2022-03/r/eclipse-modeling-tools
@@ -105,14 +106,14 @@ RUN wget https://git.frama-c.com/pub/meta/-/archive/stable/manganese/meta-stable
 #   * 	JavaScript Development Tools
 #   * 	PHP Development Tools (PDT)
 #   * 	Wild Web Developer HTML, CSS, JSON, Yaml, JavaScript, TypeScript, Node tools
-#   *	Xtend IDE
+#   *	  Xtend IDE
 #   > Web, XML, Java EE and OSGi Enterprise Development
-#   *	Eclipse XSL Developer Tools
+#   *	  Eclipse XSL Developer Tools
 
-ARG ECLIPSEVERSION=Eclipse-2022-03
-ENV ECLIPSETGZ=eclipse-modeling-2022-03_$arch.tgz
-ENV DOTECLIPSETGZ=dot_eclipse-modeling-2022-03_$arch.tgz
-ENV ECLIPSEINSTDIR=/usr/local/eclipse-modeling-2022-03
+ARG ECLIPSEVERSION=Eclipse-2022-06
+ENV ECLIPSETGZ=eclipse-modeling-2022-06_$arch.tgz
+ENV DOTECLIPSETGZ=dot_eclipse-modeling-2022-06_$arch.tgz
+ENV ECLIPSEINSTDIR=/usr/local/eclipse-modeling-2022-06
 COPY resources/${ECLIPSEVERSION}/${ECLIPSETGZ} /usr/local/
 RUN cd /usr/local; tar zxf ${ECLIPSETGZ} && rm ${ECLIPSETGZ}; \
     ln -s ${ECLIPSEINSTDIR}/eclipse /usr/local/bin/eclipse

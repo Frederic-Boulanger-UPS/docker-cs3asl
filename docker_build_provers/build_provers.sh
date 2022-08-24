@@ -9,9 +9,9 @@ export LIBGL_ALWAYS_INDIRECT=1
 apt-get update && apt-get upgrade -y && apt-get install -y x11-apps nano python3-pip wget
 
 # Build Z3 4.8.17
-wget https://github.com/Z3Prover/z3/archive/refs/tags/z3-4.8.17.tar.gz
-tar zxf z3-4.8.17.tar.gz
-cd z3-z3-4.8.17
+wget https://github.com/Z3Prover/z3/archive/refs/tags/z3-4.11.0.tar.gz
+tar zxf z3-4.11.0.tar.gz
+cd z3-z3-4.11.0
 PYTHON=python3 ./configure --prefix=/usr/local
 cd build
 make
