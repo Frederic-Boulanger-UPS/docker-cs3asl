@@ -8,7 +8,7 @@ RESOL   = 1440x900
 ARCHS   = amd64 arm64
 IMAGES := $(ARCHS:%=$(REPO)$(NAME):$(TAG)-%)
 PLATFORMS := $$(first="True"; for a in $(ARCHS); do if [[ $$first == "True" ]]; then printf "linux/%s" $$a; first="False"; else printf ",linux/%s" $$a; fi; done)
-
+DOCKERFILE = Dockerfile
 ARCHIMAGE := $(REPO)$(NAME):$(TAG)-$(ARCH)
 
 help:
@@ -20,12 +20,15 @@ help:
 
 # Build image
 build:
-	@echo "Building $(ARCHIMAGE) for $(ARCH)"
-	docker build --pull --build-arg arch=$(ARCH) --tag $(ARCHIMAGE) .
+	@echo "Building $(ARCHIMAGE) for $(ARCH) from $(DOCKERFILE)"
+	docker build --pull --build-arg arch=$(ARCH) --tag $(ARCHIMAGE) --file $(DOCKERFILE) .
 	@danglingimages=$$(docker images --filter "dangling=true" -q); \
 	if [[ $$danglingimages != "" ]]; then \
 	  docker rmi $$(docker images --filter "dangling=true" -q); \
 	fi
+
+build2022-20:
+	make TAG=2022-20 DOCKERFILE=Dockerfile.2022-20 build
 
 # Safe way to build multiarchitecture images:
 # - build each image on the matching hardware, with the -$(ARCH) tag
@@ -71,6 +74,9 @@ run:
 	sleep 5
 	open http://localhost:6080 || xdg-open http://localhost:6080 || echo "http://localhost:6080"
 
+run2022-20:
+	make TAG=2022-20 run
+
 runasubuntu:
 	docker run --rm --detach \
 		--env="USERNAME=ubuntu" \
@@ -91,6 +97,9 @@ runasroot:
 		$(ARCHIMAGE)
 	sleep 5
 	open http://localhost:6080 || xdg-open http://localhost:6080 || echo "http://localhost:6080"
+
+runasroot2022-20:
+	make TAG=2022-20 runasroot
 
 runpriv:
 	docker run --rm --interactive --tty --privileged \
